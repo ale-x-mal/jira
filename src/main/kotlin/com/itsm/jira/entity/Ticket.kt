@@ -1,6 +1,6 @@
 package com.itsm.jira.entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.*
 import com.itsm.jira.entity.enum.Priority
 import com.itsm.jira.entity.enum.Status
 import io.swagger.annotations.ApiModelProperty
@@ -8,6 +8,7 @@ import javax.persistence.*
 
 @Entity // Указывает на то что этот класс описывает модель данных
 @Table(name = "ticket") // Говорим как назвать таблицу в БД
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 data class Ticket(// Дата класс нам сгенерирует методы equals и hashCode и даст метод copy
 
         @Id // Сообщяем ORM что это поле - Primary Key
@@ -39,15 +40,10 @@ data class Ticket(// Дата класс нам сгенерирует мето�
         @ApiModelProperty(notes = "Description of the Ticket")
         val description: String = "",
 
-        @ManyToOne(fetch = FetchType.EAGER)
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn (name="creator_id")
-//        @Column(nullable = false)
         @ApiModelProperty(notes = "Creator of the Ticket")
+//        @JsonManagedReference
+//        @JsonBackReference
         var creator: User
-) {
-
-
-//        constructor(title: String, creator: User) : this(title = title) {
-//                this.creator = creator
-//        }
-}
+)

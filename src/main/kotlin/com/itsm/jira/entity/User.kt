@@ -1,6 +1,6 @@
 package com.itsm.jira.entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.*
 import io.swagger.annotations.ApiModelProperty
 import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.FetchMode
@@ -9,6 +9,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator::class, property = "id")
 data class User(
 
         @Id
@@ -59,10 +60,9 @@ data class User(
         @ApiModelProperty(notes = "Phone of the User")
         val phone: String = "",
 
-//        @Column(nullable = true)
-        @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, mappedBy = "creator")
-//        @Fetch(value = FetchMode.SELECT)
+        @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "creator")
+        @ApiModelProperty(notes = "Tickets of the User")
+//        @JsonManagedReference
+//        @JsonBackReference
         var tickets: List<Ticket>? = emptyList()
-) {
-
-}
+)
